@@ -24,15 +24,12 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends Abst
     @ManyToOne
     private U createdBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private ZonedDateTime dateTime;
+    private ZonedDateTime createdDate;
 
     @ManyToOne
     private U lastModifiedBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private ZonedDateTime lastModifiedDate;
-
 
     @Override
     public U getCreatedBy() {
@@ -44,12 +41,14 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends Abst
         this.createdBy = createdBy;
     }
 
-    public ZonedDateTime getDateTime() {
-        return dateTime;
+    @Override
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setDateTime(ZonedDateTime dateTime) {
-        this.dateTime = dateTime;
+    @Override
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override

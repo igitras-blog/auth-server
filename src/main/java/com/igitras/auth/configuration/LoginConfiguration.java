@@ -26,6 +26,10 @@ public class LoginConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/manage/**")
+                .permitAll()
+                .and()
+                .authorizeRequests()
                 .anyRequest()
                 .authenticated();
     }

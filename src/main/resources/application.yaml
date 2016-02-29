@@ -1,3 +1,6 @@
+management:
+  context-path: /manage
+
 server:
   context-path: /uaa
 security:
@@ -12,3 +15,15 @@ security:
 logging:
   level:
     org.springframework.security: DEBUG
+spring:
+  redis:
+    database: 0
+    host: localhost
+    password: password
+    port: 6379
+    timeout: 1000
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0

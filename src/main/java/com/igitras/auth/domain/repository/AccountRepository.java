@@ -1,6 +1,6 @@
-package com.igitras.auth.repository;
+package com.igitras.auth.domain.repository;
 
-import com.igitras.auth.domain.Account;
+import com.igitras.auth.domain.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.ZonedDateTime;

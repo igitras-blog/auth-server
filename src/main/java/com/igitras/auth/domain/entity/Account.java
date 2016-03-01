@@ -1,6 +1,7 @@
-package com.igitras.auth.domain;
+package com.igitras.auth.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 

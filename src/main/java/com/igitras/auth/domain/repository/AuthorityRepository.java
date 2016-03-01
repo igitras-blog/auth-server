@@ -1,6 +1,6 @@
-package com.igitras.auth.repository;
+package com.igitras.auth.domain.repository;
 
-import com.igitras.auth.domain.Authority;
+import com.igitras.auth.domain.entity.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

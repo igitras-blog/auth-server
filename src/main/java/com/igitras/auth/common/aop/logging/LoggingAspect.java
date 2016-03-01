@@ -21,17 +21,19 @@ public class LoggingAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Pointcut("within(com.igitras.auth.repository..*) || within(com.igitras.auth.service..*) || within(com.igitras.auth.web.rest..*)")
+    @Pointcut("within(com.igitras.auth.domain.repository..*) "
+            + "|| within(com.igitras.auth.service..*) "
+            + "|| within(com.igitras.auth.mvc.rest..*)")
     public void loggingPointcut() {
     }
 
     @AfterThrowing(pointcut = "loggingPointcut()",
-                   throwing = "e")
+            throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
         if (LOG.isDebugEnabled()) {
-            LOG.error("Exception in {}.{}() with cause = {} and exception {}", joinPoint.getSignature()
-                            .getDeclaringTypeName(),
-                    joinPoint.getSignature().getName(), e.getCause(), e);
+            LOG.error("Exception in {}.{}() with cause = {} and exception {}",
+                    joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
+                    e.getCause(), e);
         } else {
             LOG.error("Exception in {}.{}() with cause = {}", joinPoint.getSignature().getDeclaringTypeName(),
                     joinPoint.getSignature().getName(), e.getCause());

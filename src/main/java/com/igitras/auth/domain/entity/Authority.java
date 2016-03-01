@@ -1,4 +1,4 @@
-package com.igitras.auth.domain;
+package com.igitras.auth.domain.entity;
 
 import com.igitras.auth.common.AbstractAuditable;
 

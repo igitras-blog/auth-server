@@ -14,7 +14,8 @@ import javax.validation.Constraint;
 import javax.validation.OverridesAttribute;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * @author mason
@@ -23,33 +24,27 @@ import javax.validation.constraints.Pattern;
 @Constraint(validatedBy = {})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RUNTIME)
+@Min(0)
+@Max(Long.MAX_VALUE)
 @ReportAsSingleViolation
-@Pattern(regexp = "")
-public @interface Email {
+public @interface Range {
+    @OverridesAttribute(constraint = Min.class, name = "value") long min() default 0;
 
-    String message() default "{com.igitras.common.validation.constraints.Email.message}";
+    @OverridesAttribute(constraint = Max.class, name = "value") long max() default Long.MAX_VALUE;
+
+    String message() default "{com.igitras.common.validation.constraints.Range.message}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * @return an additional regular expression the annotated string must match. The default is any string ('.*')
+     * Defines several {@code @Range} annotations on the same element.
      */
-    @OverridesAttribute(constraint = Pattern.class, name = "regexp") String regexp() default ".*";
-
-    /**
-     * @return used in combination with {@link #regexp()} in order to specify a regular expression option
-     */
-    @OverridesAttribute(constraint = Pattern.class, name = "flags") Pattern.Flag[] flags() default { };
-
-    /**
-     * Defines several {@code @Email} annotations on the same element.
-     */
-    @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
+    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
     @Retention(RUNTIME)
     @Documented
-    @interface List {
-        Email[] value();
+    public @interface List {
+        Range[] value();
     }
 }

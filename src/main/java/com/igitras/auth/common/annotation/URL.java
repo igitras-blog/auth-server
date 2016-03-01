@@ -20,21 +20,36 @@ import javax.validation.constraints.Pattern;
  * @author mason
  */
 @Documented
-@Constraint(validatedBy = {})
-@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
+@Constraint(validatedBy = { })
+@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
 @Retention(RUNTIME)
 @ReportAsSingleViolation
 @Pattern(regexp = "")
-public @interface Email {
+public @interface URL {
+    String message() default "{com.igitras.common.validation.constraints.URL.message}";
 
-    String message() default "{com.igitras.common.validation.constraints.Email.message}";
+    Class<?>[] groups() default { };
 
-    Class<?>[] groups() default {};
-
-    Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default { };
 
     /**
-     * @return an additional regular expression the annotated string must match. The default is any string ('.*')
+     * @return the protocol (scheme) the annotated string must match, eg ftp or http.
+     *         Per default any protocol is allowed
+     */
+    String protocol() default "";
+
+    /**
+     * @return the host the annotated string must match, eg localhost. Per default any host is allowed
+     */
+    String host() default "";
+
+    /**
+     * @return the port the annotated string must match, eg 80. Per default any port is allowed
+     */
+    int port() default -1;
+
+    /**
+     * @return an additional regular expression the annotated URL must match. The default is any string ('.*')
      */
     @OverridesAttribute(constraint = Pattern.class, name = "regexp") String regexp() default ".*";
 
@@ -44,12 +59,12 @@ public @interface Email {
     @OverridesAttribute(constraint = Pattern.class, name = "flags") Pattern.Flag[] flags() default { };
 
     /**
-     * Defines several {@code @Email} annotations on the same element.
+     * Defines several {@code @URL} annotations on the same element.
      */
     @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
     @Retention(RUNTIME)
     @Documented
-    @interface List {
-        Email[] value();
+    public @interface List {
+        URL[] value();
     }
 }

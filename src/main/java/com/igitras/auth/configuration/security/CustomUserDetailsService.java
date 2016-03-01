@@ -1,7 +1,7 @@
 package com.igitras.auth.configuration.security;
 
-import com.igitras.auth.domain.Account;
-import com.igitras.auth.repository.AccountRepository;
+import com.igitras.auth.domain.entity.Account;
+import com.igitras.auth.domain.repository.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

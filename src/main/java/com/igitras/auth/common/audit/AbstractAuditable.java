@@ -1,43 +1,39 @@
-package com.igitras.auth.common;
+package com.igitras.auth.common.audit;
 
+import com.igitras.auth.common.Auditable;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Abstract base class for auditable entities. Stores the audition values in persistent fields.
  *
- * @param <U>  the auditing type. Typically some kind of user.
  * @param <PK> the type of the auditing type's idenifier
  * @author mason
  */
 @MappedSuperclass
-public abstract class AbstractAuditable<U, PK extends Serializable> extends AbstractPersistable<PK>
-        implements Auditable<U, PK> {
+public abstract class AbstractAuditable<PK extends Serializable> extends AbstractPersistable<PK>
+        implements Auditable<String, PK> {
     private static final long serialVersionUID = 8771767911665503172L;
 
-    @ManyToOne
-    private U createdBy;
+    private String createdBy;
 
     private ZonedDateTime createdDate;
 
-    @ManyToOne
-    private U lastModifiedBy;
+    private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
 
     @Override
-    public U getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
     @Override
-    public void setCreatedBy(U createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -52,12 +48,12 @@ public abstract class AbstractAuditable<U, PK extends Serializable> extends Abst
     }
 
     @Override
-    public U getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
     @Override
-    public void setLastModifiedBy(U lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 

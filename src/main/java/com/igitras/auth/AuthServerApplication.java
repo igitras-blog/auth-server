@@ -2,10 +2,11 @@ package com.igitras.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
 public class AuthServerApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {

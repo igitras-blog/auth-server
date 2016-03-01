@@ -1,9 +1,8 @@
 package com.igitras.auth.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.validator.constraints.Email;
+import com.igitras.auth.common.audit.AbstractAuditable;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -22,7 +21,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Document(indexName = "account")
-public class Account extends AbstractAuditable<Account, Long> {
+public class Account extends AbstractAuditable<Long> {
     private static final long serialVersionUID = -5936880652980576016L;
 
     @NotNull

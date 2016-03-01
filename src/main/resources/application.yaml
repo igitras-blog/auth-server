@@ -4,9 +4,6 @@ management:
 server:
   context-path: /uaa
 security:
-  user:
-    name: username
-    password: password
   ignored:
     - /css/**
     - /js/**
@@ -42,3 +39,5 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
+  mvc:
+    throw-exception-if-no-handler-found: true

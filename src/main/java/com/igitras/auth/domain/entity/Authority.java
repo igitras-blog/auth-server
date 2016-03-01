@@ -1,6 +1,6 @@
 package com.igitras.auth.domain.entity;
 
-import com.igitras.auth.common.AbstractAuditable;
+import com.igitras.auth.common.audit.AbstractAuditable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,10 +11,10 @@ import javax.validation.constraints.Size;
  * Created by mason on 2/29/16.
  */
 @Entity
-public class Authority extends AbstractAuditable<Account, Long> {
+public class Authority extends AbstractAuditable<Long> {
     @NotNull
     @Size(min = 3,
-          max = 64)
+            max = 64)
     @Column(unique = true,
             length = 64)
     private String name;

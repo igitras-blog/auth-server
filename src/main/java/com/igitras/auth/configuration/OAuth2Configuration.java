@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -29,18 +30,22 @@ public class OAuth2Configuration extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private ClientDetailsService clientDetailsService;
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient("client")
-                .secret("security")
-                .authorizedGrantTypes("authorization_code", "refresh_token", "password")
-                .scopes("openid")
-                .and()
-                .withClient("implicit")
-                .secret("security")
-                .authorizedGrantTypes("implicit", "refresh_token")
-                .scopes("openid");
+        
+//        clients.inMemory()
+//                .withClient("client")
+//                .secret("security")
+//                .authorizedGrantTypes("authorization_code", "refresh_token", "password")
+//                .scopes("openid")
+//                .and()
+//                .withClient("implicit")
+//                .secret("security")
+//                .authorizedGrantTypes("implicit", "refresh_token")
+//                .scopes("openid");
     }
 
     @Override

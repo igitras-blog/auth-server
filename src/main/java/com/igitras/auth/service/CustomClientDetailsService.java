@@ -1,16 +1,14 @@
-package com.igitras.auth.configuration.security;
+package com.igitras.auth.service;
 
-import com.igitras.auth.domain.entity.Client;
-import com.igitras.auth.domain.repository.ClientRepository;
+import com.igitras.auth.domain.entity.client.Client;
+import com.igitras.auth.domain.repository.client.ClientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -21,7 +19,6 @@ import java.util.Optional;
 /**
  * @author mason
  */
-@Component
 public class CustomClientDetailsService implements ClientDetailsService {
     private static final Logger LOG = LoggerFactory.getLogger(CustomClientDetailsService.class);
 
@@ -37,9 +34,11 @@ public class CustomClientDetailsService implements ClientDetailsService {
         }
     }
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
+    public CustomClientDetailsService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {

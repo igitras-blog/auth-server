@@ -35,7 +35,7 @@ public class OAuth2Configuration extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        
+
 //        clients.inMemory()
 //                .withClient("client")
 //                .secret("security")

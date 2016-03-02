@@ -1,4 +1,4 @@
-package com.igitras.auth.domain.entity;
+package com.igitras.auth.domain.entity.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igitras.auth.common.audit.AbstractAuditable;

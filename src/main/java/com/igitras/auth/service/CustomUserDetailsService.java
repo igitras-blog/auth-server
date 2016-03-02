@@ -1,17 +1,16 @@
-package com.igitras.auth.configuration.security;
+package com.igitras.auth.service;
 
-import com.igitras.auth.domain.entity.Account;
-import com.igitras.auth.domain.repository.AccountRepository;
+import com.igitras.auth.configuration.security.UserNotActivatedException;
+import com.igitras.auth.domain.entity.account.Account;
+import com.igitras.auth.domain.repository.account.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -22,12 +21,14 @@ import java.util.stream.Collectors;
 /**
  * @author mason
  */
-@Component
 public class CustomUserDetailsService implements UserDetailsService {
     private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+
+    public CustomUserDetailsService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     @Override
     @Transactional

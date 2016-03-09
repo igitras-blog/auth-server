@@ -1,5 +1,6 @@
 package com.igitras.auth.domain.entity.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igitras.auth.common.audit.AbstractAuditable;
 
 import java.util.HashSet;
@@ -31,6 +32,19 @@ public class Group extends AbstractAuditable<Long> {
                     referencedColumnName = "id")})
     private Set<Account> members = new HashSet<>();
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "agroup_authority",
+            joinColumns = {
+                    @JoinColumn(name = "group_id",
+                            referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "authority_id",
+                            referencedColumnName = "id")
+            })
+    private Set<Authority> authorities = new HashSet<>();
+
     public String getName() {
         return name;
     }
@@ -45,5 +59,13 @@ public class Group extends AbstractAuditable<Long> {
 
     public void setMembers(Set<Account> members) {
         this.members = members;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 }

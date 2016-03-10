@@ -1,10 +1,10 @@
 package com.igitras.auth.domain.repository.audit;
 
 import com.igitras.auth.domain.entity.audit.PersistentAuditEvent;
-import com.sun.tools.javac.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Spring Data JPA repository for the PersistentAuditEvent entity.

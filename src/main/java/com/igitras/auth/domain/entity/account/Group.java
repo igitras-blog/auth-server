@@ -15,35 +15,40 @@ import javax.validation.constraints.NotNull;
 /**
  * @author mason
  */
-@Entity
+@Entity(name = "uaa_group")
 public class Group extends AbstractAuditable<Long> {
 
     private static final long serialVersionUID = 3094777966413111844L;
 
     @NotNull
-    @Column(unique = true, nullable = false)
+    @Column(unique = true,
+            nullable = false)
     private String name;
 
     @ManyToMany
-    @JoinTable(name = "group_member",
-            joinColumns = {@JoinColumn(name = "group_id",
-                    referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "member_id",
-                    referencedColumnName = "id")})
+    @JoinTable(name = "uaa_group_member",
+               joinColumns = {
+                       @JoinColumn(name = "group_id",
+                                   referencedColumnName = "id")
+               },
+               inverseJoinColumns = {
+                       @JoinColumn(name = "member_id",
+                                   referencedColumnName = "id")
+               })
     private Set<Account> members = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "agroup_authority",
-            joinColumns = {
-                    @JoinColumn(name = "group_id",
-                            referencedColumnName = "id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "authority_id",
-                            referencedColumnName = "id")
-            })
-    private Set<Authority> authorities = new HashSet<>();
+    @JoinTable(name = "uaa_group_role",
+               joinColumns = {
+                       @JoinColumn(name = "group_id",
+                                   referencedColumnName = "id")
+               },
+               inverseJoinColumns = {
+                       @JoinColumn(name = "role_id",
+                                   referencedColumnName = "id")
+               })
+    private Set<Role> roles = new HashSet<>();
 
     public String getName() {
         return name;
@@ -61,11 +66,11 @@ public class Group extends AbstractAuditable<Long> {
         this.members = members;
     }
 
-    public Set<Authority> getAuthorities() {
-        return authorities;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

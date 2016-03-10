@@ -2,7 +2,6 @@ package com.igitras.auth.domain.entity.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igitras.auth.common.audit.AbstractAuditable;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -19,8 +18,7 @@ import javax.validation.constraints.Size;
 /**
  * @author mason
  */
-@Entity
-@Document(indexName = "account")
+@Entity(name = "uaa_account")
 public class Account extends AbstractAuditable<Long> {
     private static final long serialVersionUID = -5936880652980576016L;
 
@@ -65,16 +63,18 @@ public class Account extends AbstractAuditable<Long> {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "account_authority",
+    @JoinTable(name = "uaa_account_role",
                joinColumns = {
                        @JoinColumn(name = "account_id",
                                    referencedColumnName = "id")
                },
                inverseJoinColumns = {
-                       @JoinColumn(name = "authority_id",
+                       @JoinColumn(name = "role_id",
                                    referencedColumnName = "id")
                })
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
+
+    private Set<Group> groups = new HashSet<>();
 
     public String getLogin() {
         return login;
@@ -132,12 +132,20 @@ public class Account extends AbstractAuditable<Long> {
         this.resetDate = resetDate;
     }
 
-    public Set<Authority> getAuthorities() {
-        return authorities;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 
     @Override
@@ -154,6 +162,9 @@ public class Account extends AbstractAuditable<Long> {
 
         Account account = (Account) o;
 
+        if (activated != account.activated) {
+            return false;
+        }
         if (login != null ? !login.equals(account.login) : account.login != null) {
             return false;
         }
@@ -172,7 +183,10 @@ public class Account extends AbstractAuditable<Long> {
         if (resetDate != null ? !resetDate.equals(account.resetDate) : account.resetDate != null) {
             return false;
         }
-        return !(authorities != null ? !authorities.equals(account.authorities) : account.authorities != null);
+        if (roles != null ? !roles.equals(account.roles) : account.roles != null) {
+            return false;
+        }
+        return !(groups != null ? !groups.equals(account.groups) : account.groups != null);
 
     }
 
@@ -183,22 +197,11 @@ public class Account extends AbstractAuditable<Long> {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (activationKey != null ? activationKey.hashCode() : 0);
+        result = 31 * result + (activated ? 1 : 0);
         result = 31 * result + (resetKey != null ? resetKey.hashCode() : 0);
         result = 31 * result + (resetDate != null ? resetDate.hashCode() : 0);
-        result = 31 * result + (authorities != null ? authorities.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
+        result = 31 * result + (groups != null ? groups.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", activationKey='" + activationKey + '\'' +
-                ", resetKey='" + resetKey + '\'' +
-                ", resetDate=" + resetDate +
-                ", authorities=" + authorities +
-                '}';
     }
 }

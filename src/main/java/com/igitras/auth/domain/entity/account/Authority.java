@@ -10,11 +10,11 @@ import javax.validation.constraints.Size;
 /**
  * Created by mason on 2/29/16.
  */
-@Entity
+@Entity(name = "uaa_authority")
 public class Authority extends AbstractAuditable<Long> {
     @NotNull
     @Size(min = 3,
-            max = 64)
+          max = 64)
     @Column(unique = true,
             length = 64)
     private String name;

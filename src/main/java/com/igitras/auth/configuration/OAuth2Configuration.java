@@ -34,6 +34,12 @@ public class OAuth2Configuration extends AuthorizationServerConfigurerAdapter {
     private ClientDetailsService clientDetailsService;
 
     @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.checkTokenAccess("permitAll()")
+                .allowFormAuthenticationForClients();
+    }
+
+    @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
 //        clients.inMemory()
@@ -63,14 +69,8 @@ public class OAuth2Configuration extends AuthorizationServerConfigurerAdapter {
         return converter;
     }
 
-    @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.checkTokenAccess("permitAll()")
-                .allowFormAuthenticationForClients();
-    }
-
     @Bean
-    public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory){
+    public TokenStore tokenStore(RedisConnectionFactory redisConnectionFactory) {
         return new RedisTokenStore(redisConnectionFactory);
     }
 

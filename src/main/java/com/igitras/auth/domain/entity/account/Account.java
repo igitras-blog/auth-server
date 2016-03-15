@@ -43,27 +43,18 @@ public class Account extends AbstractAuditable<Long> {
             unique = true)
     private String email;
 
-    @JsonIgnore
-    @Size(max = 20)
-    @Column(name = "activation_key",
-            length = 20)
-    private String activationKey;
-
     @Column(nullable = false)
     private boolean activated = false;
 
-    @Size(max = 20)
-    @Column(name = "reset_key",
-            length = 20)
-    private String resetKey;
+    private boolean accountLocked = false;
 
-    @Column(name = "reset_date",
-            nullable = true)
-    private ZonedDateTime resetDate = null;
+    private boolean accountExpired = false;
+
+    private boolean credentialExpired = false;
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "uaa_account_role",
+    @JoinTable(name = "uaa_account_authorities",
                joinColumns = {
                        @JoinColumn(name = "account_id",
                                    referencedColumnName = "id")
@@ -72,7 +63,7 @@ public class Account extends AbstractAuditable<Long> {
                        @JoinColumn(name = "role_id",
                                    referencedColumnName = "id")
                })
-    private Set<Role> roles = new HashSet<>();
+    private Set<Authority> authorities = new HashSet<>();
 
     private Set<Group> groups = new HashSet<>();
 
@@ -100,14 +91,6 @@ public class Account extends AbstractAuditable<Long> {
         this.email = email;
     }
 
-    public String getActivationKey() {
-        return activationKey;
-    }
-
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
-    }
-
     public boolean isActivated() {
         return activated;
     }
@@ -116,28 +99,36 @@ public class Account extends AbstractAuditable<Long> {
         this.activated = activated;
     }
 
-    public String getResetKey() {
-        return resetKey;
+    public boolean isAccountLocked() {
+        return accountLocked;
     }
 
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
+    public void setAccountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
     }
 
-    public ZonedDateTime getResetDate() {
-        return resetDate;
+    public boolean isAccountExpired() {
+        return accountExpired;
     }
 
-    public void setResetDate(ZonedDateTime resetDate) {
-        this.resetDate = resetDate;
+    public void setAccountExpired(boolean accountExpired) {
+        this.accountExpired = accountExpired;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public boolean isCredentialExpired() {
+        return credentialExpired;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setCredentialExpired(boolean credentialExpired) {
+        this.credentialExpired = credentialExpired;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     public Set<Group> getGroups() {
@@ -148,60 +139,4 @@ public class Account extends AbstractAuditable<Long> {
         this.groups = groups;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        Account account = (Account) o;
-
-        if (activated != account.activated) {
-            return false;
-        }
-        if (login != null ? !login.equals(account.login) : account.login != null) {
-            return false;
-        }
-        if (password != null ? !password.equals(account.password) : account.password != null) {
-            return false;
-        }
-        if (email != null ? !email.equals(account.email) : account.email != null) {
-            return false;
-        }
-        if (activationKey != null ? !activationKey.equals(account.activationKey) : account.activationKey != null) {
-            return false;
-        }
-        if (resetKey != null ? !resetKey.equals(account.resetKey) : account.resetKey != null) {
-            return false;
-        }
-        if (resetDate != null ? !resetDate.equals(account.resetDate) : account.resetDate != null) {
-            return false;
-        }
-        if (roles != null ? !roles.equals(account.roles) : account.roles != null) {
-            return false;
-        }
-        return !(groups != null ? !groups.equals(account.groups) : account.groups != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (login != null ? login.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (activationKey != null ? activationKey.hashCode() : 0);
-        result = 31 * result + (activated ? 1 : 0);
-        result = 31 * result + (resetKey != null ? resetKey.hashCode() : 0);
-        result = 31 * result + (resetDate != null ? resetDate.hashCode() : 0);
-        result = 31 * result + (roles != null ? roles.hashCode() : 0);
-        result = 31 * result + (groups != null ? groups.hashCode() : 0);
-        return result;
-    }
 }

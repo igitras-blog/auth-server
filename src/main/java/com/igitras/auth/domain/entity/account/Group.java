@@ -39,16 +39,16 @@ public class Group extends AbstractAuditable<Long> {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "uaa_group_role",
+    @JoinTable(name = "uaa_group_authority",
                joinColumns = {
                        @JoinColumn(name = "group_id",
                                    referencedColumnName = "id")
                },
                inverseJoinColumns = {
-                       @JoinColumn(name = "role_id",
+                       @JoinColumn(name = "authority_id",
                                    referencedColumnName = "id")
                })
-    private Set<Role> roles = new HashSet<>();
+    private Set<Authority> authorities = new HashSet<>();
 
     public String getName() {
         return name;
@@ -66,11 +66,11 @@ public class Group extends AbstractAuditable<Long> {
         this.members = members;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 }

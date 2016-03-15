@@ -66,7 +66,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
             //TODO: cache groupRoles and userRoles
-            List<GrantedAuthority> grantedAuthorities = ac.getRoles()
+            List<GrantedAuthority> grantedAuthorities = ac.getAuthorities()
                     .stream()
                     .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                     .collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         for (Group group : groups) {
-            if (!CollectionUtils.isEmpty(group.getRoles())) {
+            if (!CollectionUtils.isEmpty(group.getAuthorities())) {
                 return true;
             }
         }
@@ -91,7 +91,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private boolean hasAnyRole(Account account) {
-        return !CollectionUtils.isEmpty(account.getRoles());
+        return !CollectionUtils.isEmpty(account.getAuthorities());
     }
 
 

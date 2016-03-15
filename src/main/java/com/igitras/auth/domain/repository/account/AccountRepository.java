@@ -12,11 +12,7 @@ import java.util.Optional;
  */
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Optional<Account> findOneByActivationKey(String activationKey);
-
     List<Account> findAllByActivatedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
-
-    Optional<Account> findOneByResetKey(String resetKey);
 
     Optional<Account> findOneByEmail(String email);
 

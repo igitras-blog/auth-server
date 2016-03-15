@@ -1,32 +1,58 @@
 package com.igitras.auth.service;
 
+import com.igitras.auth.domain.entity.account.Account;
 import com.igitras.auth.domain.repository.account.AccountRepository;
-import com.igitras.auth.domain.repository.account.GroupRepository;
+import com.igitras.auth.mvc.dto.AccountDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.GroupManager;
-import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.core.userdetails.cache.NullUserCache;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * @author mason
  */
 @Component
-public class CustomUserManager extends CustomUserDetailsService implements UserDetailsManager, GroupManager {
+public class CustomUserManager extends CustomUserDetailsService {
+    public static final Logger LOG = LoggerFactory.getLogger(CustomUserManager.class);
 
     private AccountRepository accountRepository;
 
-    @Autowired
-    private GroupRepository groupRepository;
+    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private UserCache userCache = new NullUserCache();
+
+    public void setAuthenticationManager(
+            AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    public void setUserCache(UserCache userCache) {
+        this.userCache = userCache;
+    }
+
+    // ~ Methods
+    // ========================================================================================================
+
+    protected void initDao() throws ApplicationContextException {
+        if (authenticationManager == null) {
+            LOG.info("No authentication manager set. Reauthentication of users when changing passwords will "
+                    + "not be performed.");
+        }
+    }
 
     @Autowired
     public CustomUserManager(AccountRepository accountRepository) {
@@ -35,79 +61,154 @@ public class CustomUserManager extends CustomUserDetailsService implements UserD
     }
 
 
-    @Override
-    public void createUser(UserDetails user) {
-        validateUserDetails(user);
-
+    public Account createUser(AccountDto accountDto) {
+        Account account = new Account();
+        account.setActivated(accountDto.isEnabled());
+        account.setLogin(accountDto.getUsername());
+        String password = accountDto.getPassword();
+        account.setPassword(password);
+        account.setEmail(accountDto.getEmail());
+        return accountRepository.save(account);
     }
 
-    @Override
-    public List<String> findAllGroups() {
-        return null;
+    public void activeAccount(String username) {
+        LOG.debug("Active credential with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setActivated(true);
+            LOG.debug("Active credential with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public List<String> findUsersInGroup(String groupName) {
-        return null;
+    public void unexpireCredential(String username) {
+        LOG.debug("Un-Expire credential with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setCredentialExpired(false);
+            LOG.debug("Un-Expire credential with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public void createGroup(String groupName, List<GrantedAuthority> authorities) {
-
+    public void expireCredential(String username) {
+        LOG.debug("Expire credential with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setCredentialExpired(true);
+            LOG.debug("Expire credential with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public void deleteGroup(String groupName) {
-
+    public void unexpireAccount(String username) {
+        LOG.debug("Un-Expire account with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setAccountExpired(false);
+            LOG.debug("Un-Expire account with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public void renameGroup(String oldName, String newName) {
-
+    public void expireAccount(String username) {
+        LOG.debug("Expire account with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setAccountExpired(true);
+            LOG.debug("Expire account with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public void addUserToGroup(String username, String group) {
-
+    public void unlockAccount(String username) {
+        LOG.debug("UnLock account with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setAccountLocked(false);
+            LOG.debug("Unlock account with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public void removeUserFromGroup(String username, String groupName) {
-
+    public void lockAccount(String username) {
+        LOG.debug("lock account with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setAccountLocked(true);
+            LOG.debug("Lock account with login: {}", username);
+            accountRepository.save(account);
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
-    public List<GrantedAuthority> findGroupAuthorities(String groupName) {
-        return null;
-    }
-
-    @Override
-    public void addGroupAuthority(String groupName, GrantedAuthority authority) {
-
-    }
-
-    @Override
-    public void removeGroupAuthority(String groupName, GrantedAuthority authority) {
-
-    }
-
-    @Override
-    public void updateUser(UserDetails user) {
-
-    }
-
-    @Override
     public void deleteUser(String username) {
-
+        LOG.debug("delete account with {}", username);
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            LOG.debug("delete account with login: {}", username);
+            accountRepository.delete(oneByLogin.get());
+        }
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
+
+
     public void changePassword(String oldPassword, String newPassword) {
+        Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
 
+        if (currentUser == null) {
+            // This would indicate bad coding somewhere
+            throw new AccessDeniedException("Can't change password as no Authentication object found in context "
+                    + "for current user.");
+        }
+
+        String username = currentUser.getName();
+
+        // If an authentication manager has been set, re-authenticate the user with the supplied password.
+        if (authenticationManager != null) {
+            LOG.debug("Reauthenticating user '" + username + "' for password change request.");
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, oldPassword));
+        } else {
+            LOG.debug("No authentication manager set. Password won't be re-checked.");
+        }
+
+        LOG.debug("Changing password for user '" + username + "'");
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            Account account = oneByLogin.get();
+            account.setLogin(username);
+            LOG.debug("Change password with login: {}", username);
+            accountRepository.save(account);
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(createNewAuthentication(currentUser, newPassword));
+
+        userCache.removeUserFromCache(username);
     }
 
-    @Override
     public boolean userExists(String username) {
+        LOG.debug("Check user exist with '" + username + "'");
+        Optional<Account> oneByLogin = accountRepository.findOneByLogin(username);
+        if (oneByLogin.isPresent()) {
+            LOG.debug("Find account with login: {}", username);
+            return true;
+        }
+
         return false;
     }
 
@@ -124,5 +225,15 @@ public class CustomUserManager extends CustomUserDetailsService implements UserD
             Assert.hasText(authority.getAuthority(),
                     "getAuthority() method must return a non-empty string");
         }
+    }
+
+    protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
+        UserDetails user = loadUserByUsername(currentAuth.getName());
+
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(
+                user, null, user.getAuthorities());
+        newAuthentication.setDetails(currentAuth.getDetails());
+
+        return newAuthentication;
     }
 }

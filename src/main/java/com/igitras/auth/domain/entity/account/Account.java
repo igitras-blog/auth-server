@@ -3,7 +3,6 @@ package com.igitras.auth.domain.entity.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.igitras.auth.common.audit.AbstractAuditable;
 
-import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -54,7 +53,7 @@ public class Account extends AbstractAuditable<Long> {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "uaa_account_authorities",
+    @JoinTable(name = "uaa_account_role",
                joinColumns = {
                        @JoinColumn(name = "account_id",
                                    referencedColumnName = "id")
@@ -63,8 +62,9 @@ public class Account extends AbstractAuditable<Long> {
                        @JoinColumn(name = "role_id",
                                    referencedColumnName = "id")
                })
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany(mappedBy = "members")
     private Set<Group> groups = new HashSet<>();
 
     public String getLogin() {
@@ -123,12 +123,12 @@ public class Account extends AbstractAuditable<Long> {
         this.credentialExpired = credentialExpired;
     }
 
-    public Set<Authority> getAuthorities() {
-        return authorities;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public Set<Group> getGroups() {

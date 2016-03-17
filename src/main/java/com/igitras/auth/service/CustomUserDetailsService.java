@@ -8,18 +8,18 @@ import com.igitras.auth.domain.entity.account.Group;
 import com.igitras.auth.domain.repository.account.AccountRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,17 +28,14 @@ import java.util.stream.Collectors;
 /**
  * @author mason
  */
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
     private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
-    private final AccountRepository accountRepository;
-
-    public CustomUserDetailsService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Assert.hasLength(username, "Username must have length while loading user");
         LOG.debug("Authenticating {}", username);
@@ -66,7 +63,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
             //TODO: cache groupRoles and userRoles
-            List<GrantedAuthority> grantedAuthorities = ac.getAuthorities()
+            List<GrantedAuthority> grantedAuthorities = ac.getRoles()
                     .stream()
                     .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                     .collect(Collectors.toList());
@@ -83,7 +80,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         for (Group group : groups) {
-            if (!CollectionUtils.isEmpty(group.getAuthorities())) {
+            if (!CollectionUtils.isEmpty(group.getRoles())) {
                 return true;
             }
         }
@@ -91,7 +88,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private boolean hasAnyRole(Account account) {
-        return !CollectionUtils.isEmpty(account.getAuthorities());
+        return !CollectionUtils.isEmpty(account.getRoles());
     }
 
 

@@ -38,5 +38,6 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
+    open-in-view: true
   mvc:
     throw-exception-if-no-handler-found: true

@@ -1,20 +1,19 @@
 package com.igitras.auth.domain.repository.account;
 
-import com.igitras.auth.domain.entity.account.Authority;
+import com.igitras.auth.domain.entity.account.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 /**
- * Spring Data JPA repository for the Authority entity.
+ * Spring Data JPA repository for the Role entity.
  *
  * @author mason
  */
-public interface AuthorityRepository extends JpaRepository<Authority, String> {
+public interface AuthorityRepository extends JpaRepository<Role, String> {
 
-    Optional<Authority> findOneByName(String name);
+    Optional<Role> findOneByName(String name);
 
-    Set<Authority> findByNameIn(Set<String> name);
+    Set<Role> findByNameIn(Set<String> name);
 }

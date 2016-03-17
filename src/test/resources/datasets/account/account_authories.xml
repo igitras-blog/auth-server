@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <uaa_account_authorities account_id="1" authority_id="1"/>
+    <uaa_account_authorities account_id="1" authority_id="2"/>
+</dataset>

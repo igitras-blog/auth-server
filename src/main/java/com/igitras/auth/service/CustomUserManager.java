@@ -16,7 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.cache.NullUserCache;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
@@ -25,11 +25,15 @@ import java.util.Optional;
 /**
  * @author mason
  */
-@Component
-public class CustomUserManager extends CustomUserDetailsService {
+@Service
+public class CustomUserManager {
     public static final Logger LOG = LoggerFactory.getLogger(CustomUserManager.class);
 
+    @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     private AuthenticationManager authenticationManager;
 
@@ -53,13 +57,6 @@ public class CustomUserManager extends CustomUserDetailsService {
                     + "not be performed.");
         }
     }
-
-    @Autowired
-    public CustomUserManager(AccountRepository accountRepository) {
-        super(accountRepository);
-        this.accountRepository = accountRepository;
-    }
-
 
     public Account createUser(AccountDto accountDto) {
         Account account = new Account();
@@ -228,7 +225,7 @@ public class CustomUserManager extends CustomUserDetailsService {
     }
 
     protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
-        UserDetails user = loadUserByUsername(currentAuth.getName());
+        UserDetails user = customUserDetailsService.loadUserByUsername(currentAuth.getName());
 
         UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(
                 user, null, user.getAuthorities());

@@ -3,10 +3,12 @@ package com.igitras.auth;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
+@EnableJpaRepositories
 public class AuthServerApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
